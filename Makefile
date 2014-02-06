@@ -25,6 +25,8 @@ SEQ_FILENAMES=$(foreach chrom, $(CHROMS), Zea_mays.$(AGP_VER).dna.chromosome.$(c
 SEQ_URLS=$(addprefix $(AGP_SEQ_URL), $(SEQ_FILENAMES))
 LOCAL_SEQ_FILES=$(addprefix $(AGP_DIR)/seqs/, $(SEQ_FILENAMES))
 
+
+.PHONY: gtf gff all clean clean-annot clean-resources
 ## Files
 AGP_GTF=$(AGP_DIR)/annot/Zea_mays.$(AGP_VER).gtf
 AGP_GFF3=$(AGP_DIR)/annot/Zea_mays.$(AGP_VER).gff3
@@ -32,22 +34,36 @@ gtf: $(AGP_GTF)
 gff: $(AGP_GFF3)
 COMBINED_FASTA=$(AGP_DIR)/seqs/$(AGP_VER)_combined.fa
 SEQ_LENGTHS=$(AGP_DIR)/resources/$(AGP_VER)_lengths.txt
-all: $(LOCAL_SEQ_FILES) gtf
 
-$(COMBINED_FASTA) $(LOCAL_SEQ_FILES): | $(AGP_DIR)
+all: $(COMBINED_FASTA) gtf $(SEQ_LENGTHS)
+
+$(LOCAL_SEQ_FILES): | $(AGP_DIR)
 	@echo "Downloading full sequences for chromosomes 1-10, Mt, Pt"
 	(cd $(AGP_DIR)/seqs && wget $(SEQ_URLS))
-	(cd $(AGP_DIR)/seqs && gzcat $(LOCAL_SEQ_FILES) > $(COMBINED_FASTA) )
+	touch $@
+
+$(COMBINED_FASTA): $(LOCAL_SEQ_FILES) | $(AGP_DIR) 
+	(gzcat $(LOCAL_SEQ_FILES) > $(COMBINED_FASTA) )
 
 $(AGP_GFF3): | $(AGP_DIR)
 	@echo "Downloading GFF3"
-	curl $(AGP_GFF3_URL) | gzcat > $@
+	wget -O - $(AGP_GFF3_URL) | gzcat > $@
+	touch $@
 
 $(AGP_GTF): | $(AGP_DIR)
 	@echo "Downloading GTF"
-	curl $(AGP_GTF_URL) | gzcat > $@
+	wget -O - $(AGP_GTF_URL) | gzcat > $@
+	touch $@
 
 $(SEQ_LENGTHS): $(COMBINED_FASTA) | $(AGP_DIR)
 	@echo "creating table of sequence lengths"
-	bioawk -c fastx '{print $$name"\t"length($$seq)"\tNA"}' $^ > $@
+	bioawk -c fastx '{print $$name"\t"length($$seq)}' $^ > $@
 
+clean:
+	rm -f $(AGP_DIR)/seqs/* $(AGP_DIR)/annot/* $(AGP_DIR)/resources/*
+
+clean-annot:
+	rm -f $(AGP_DIR)/annot/*
+
+clean-resources:
+	rm -f $(AGP_DIR)/resources/*
