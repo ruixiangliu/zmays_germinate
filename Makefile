@@ -24,7 +24,11 @@ AGP_GFF3_URL=ftp://ftp.ensemblgenomes.org/pub/plants/release-$(AGP_RVER)/gff3/ze
 AGP_GTF_URL=ftp://ftp.ensemblgenomes.org/pub/plants/release-$(AGP_RVER)/gtf/zea_mays/Zea_mays.$(AGP_VER).gtf.gz
 
 ## Sequences
-CHROMS=1 2 3 4 5 6 7 8 9 10 Mt Pt
+ifeq ($(AGP_VER),AGPv2.17) # resolve naming inconsistency
+	CHROMS=1 2 3 4 5 6 7 8 9 10 mitochondrion chloroplast
+else
+	CHROMS=1 2 3 4 5 6 7 8 9 10 Mt Pt
+endif
 SEQ_FILENAMES=$(foreach chrom, $(CHROMS), Zea_mays.$(AGP_VER).dna.chromosome.$(chrom).fa.gz)
 SEQ_URLS=$(addprefix $(AGP_SEQ_URL), $(SEQ_FILENAMES))
 LOCAL_SEQ_FILES=$(addprefix $(AGP_DIR)/seqs/, $(SEQ_FILENAMES))
