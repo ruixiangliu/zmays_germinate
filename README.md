@@ -9,11 +9,16 @@ al., 2009](http://www.sciencemag.org/content/326/5956/1112)), AGPv2, and AGPv3.
 Ensembl supports AGPv2 and AGPv3, but their release cycle and version numbers
 are based on their Ensembl genome scheme.
 
-The `Makefile` contains a variable `AGP_VER` that can be changed to either: `AGPv2.17` (the last Ensembl release of AGPv2) or `AGPv3.20` (the most recent release of AGPv3). Note that this only changes what the makefile gathers -- transcript databases created by `R/txdb.R` will use Ensembl's mart databases, but will explicitly version everything created under the directory `data`.
+The `Makefile` contains a variable `AGP_VER` that can be changed to either:
+`AGPv2.17` (the last Ensembl release of AGPv2) or `AGPv3.20` (the most recent
+release of AGPv3). Note that this only changes what the makefile gathers --
+transcript databases created by `R/txdb.R` will use Ensembl's mart databases,
+but will explicitly version everything created under the directory `data`.
 
 ## Data
 
-All data is downloaded to `data/`.
+All data is downloaded to `data/`, in directory corresponding to the AGP
+version.
 
 ### Sequences
 
@@ -24,8 +29,15 @@ into a file with the suffix `_combined.fa` in the particular version directory.
 
 ### Annotation
 
-Ensembl's AGPv2 version only contains a GTF file, but a GTF file and GFF3 file are available for AGPv3. 
+Ensembl's AGPv2 version only contains a GTF file, but a GTF file and GFF3 file
+are available for AGPv3.
 
-### Resources
+## Running
 
-There are some derived resources created. For example
+To adjust the AGP version, uncomment the appropriate `AGP_VER`. Then, run:
+
+    $ make all
+
+
+
+
