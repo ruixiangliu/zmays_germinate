@@ -38,6 +38,5 @@ To adjust the AGP version, uncomment the appropriate `AGP_VER`. Then, run:
 
     $ make all
 
-
-
+If you're using AGPv3, which has a GFF3, you also run `make gff`.
 

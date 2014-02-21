@@ -6,6 +6,9 @@ AGP_VER=AGPv2.17
 #AGP_VER=AGPv3.20
 AGP_RVER=$(shell echo $(AGP_VER) | cut -f2 -d.)
 
+## Portability
+ZCAT=gzcat
+
 ## Output locations
 DDIR=data
 AGP_DIR=$(DDIR)/$(AGP_VER)
@@ -43,16 +46,16 @@ $(LOCAL_SEQ_FILES): | $(AGP_DIR)
 	touch $@
 
 $(COMBINED_FASTA): $(LOCAL_SEQ_FILES) | $(AGP_DIR)
-	(gzcat $(LOCAL_SEQ_FILES) > $(COMBINED_FASTA))
+	($(ZCAT) $(LOCAL_SEQ_FILES) > $(COMBINED_FASTA))
 
 $(AGP_GFF3): | $(AGP_DIR)
 	@echo "Downloading GFF3"
-	wget -O - $(AGP_GFF3_URL) | gzcat > $@
+	wget -O - $(AGP_GFF3_URL) | $(ZCAT) > $@
 	touch $@
 
 $(AGP_GTF): | $(AGP_DIR)
 	@echo "Downloading GTF"
-	wget -O - $(AGP_GTF_URL) | gzcat > $@
+	wget -O - $(AGP_GTF_URL) | $(ZCAT) > $@
 	touch $@
 
 $(SEQ_LENGTHS): $(COMBINED_FASTA) | $(AGP_DIR)
