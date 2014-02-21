@@ -2,7 +2,8 @@
 
 ## Ensembl information
 # Note that the latest Ensembl build that corresponds to AGPv2 is 17
-AGP_VER=AGPv3.20
+AGP_VER=AGPv2.17
+#AGP_VER=AGPv3.20
 AGP_RVER=$(shell echo $(AGP_VER) | cut -f2 -d.)
 
 ## Output locations
@@ -25,7 +26,6 @@ SEQ_FILENAMES=$(foreach chrom, $(CHROMS), Zea_mays.$(AGP_VER).dna.chromosome.$(c
 SEQ_URLS=$(addprefix $(AGP_SEQ_URL), $(SEQ_FILENAMES))
 LOCAL_SEQ_FILES=$(addprefix $(AGP_DIR)/seqs/, $(SEQ_FILENAMES))
 
-
 .PHONY: gtf gff all clean clean-annot clean-resources
 ## Files
 AGP_GTF=$(AGP_DIR)/annot/Zea_mays.$(AGP_VER).gtf
@@ -42,8 +42,8 @@ $(LOCAL_SEQ_FILES): | $(AGP_DIR)
 	(cd $(AGP_DIR)/seqs && wget $(SEQ_URLS))
 	touch $@
 
-$(COMBINED_FASTA): $(LOCAL_SEQ_FILES) | $(AGP_DIR) 
-	(gzcat $(LOCAL_SEQ_FILES) > $(COMBINED_FASTA) )
+$(COMBINED_FASTA): $(LOCAL_SEQ_FILES) | $(AGP_DIR)
+	(gzcat $(LOCAL_SEQ_FILES) > $(COMBINED_FASTA))
 
 $(AGP_GFF3): | $(AGP_DIR)
 	@echo "Downloading GFF3"
@@ -60,7 +60,7 @@ $(SEQ_LENGTHS): $(COMBINED_FASTA) | $(AGP_DIR)
 	bioawk -c fastx '{print $$name"\t"length($$seq)}' $^ > $@
 
 clean:
-	rm -f $(AGP_DIR)/seqs/* $(AGP_DIR)/annot/* $(AGP_DIR)/resources/*
+	rm -rf $(AGP_DIR)
 
 clean-annot:
 	rm -f $(AGP_DIR)/annot/*

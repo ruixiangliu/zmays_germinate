@@ -28,5 +28,5 @@ if (version[1] != "3" && version[2] != "20")
 
 # we support different verions in the future
 txdb <- makeTranscriptDbFromBiomart(biomart=sprintf("plants_mart_%s", version[2]), data="zmays_eg_gene")
-saveDb(txdb, file = sprintf("data/%s/resources/zmays_txdb_ensembl_%s.sqlite", args[[1]], version[20]))
+saveDb(txdb, file = sprintf("data/%s/resources/zmays_txdb_ensembl_%s.sqlite", args[[1]], version[2]))
 
